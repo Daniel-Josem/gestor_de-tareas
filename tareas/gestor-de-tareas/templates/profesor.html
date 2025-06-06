@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Profesor</title>
+  <!-- CSS propio -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/profesor.css') }}" />
+  <!-- Iconos Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row gx-0">
+      <!-- Barra lateral verde -->
+      <nav id="sidebar" class="col-md-2 d-none d-md-block">
+        <h4 class="sidebar-title">Panel</h4>
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a href="#" class="nav-link active">
+              <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="bi bi-list-task me-2"></i> Tareas
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="bi bi-calendar3 me-2"></i> Calendario
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Contenido principal -->
+      <div class="col-md-10 col-12">
+        <div class="main-container">
+          <h1>Panel Profesor</h1>
+
+          <!-- Filtros -->
+          <form method="get" class="filtros-form">
+            <div class="form-group">
+              <label for="estado">Filtrar por estado:</label>
+              <select id="estado" name="estado" onchange="this.form.submit()">
+                <option value="">Todos</option>
+                <option value="pendiente" {{ 'selected' if estado == 'pendiente' else '' }}>Pendiente</option>
+                <option value="completada" {{ 'selected' if estado == 'completada' else '' }}>Completada</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="curso">Filtrar por curso:</label>
+              <select id="curso" name="curso" onchange="this.form.submit()">
+                <option value="">Todos</option>
+                {% for c in cursos %}
+                  <option value="{{ c['curso'] }}" {{ 'selected' if curso_filtro == c['curso'] else '' }}>
+                    {{ c['curso'] }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group align-end">
+              <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+            <div class="form-group align-end">
+              <button type="button" class="btn btn-success" id="btnCrearTarea">Crear nueva tarea</button>
+            </div>
+          </form>
+
+          <!-- Tabla de tareas -->
+          <table class="tabla-tareas">
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Descripción</th>
+      <th>Curso destino</th>
+      <th>Fecha vencimiento</th>
+      <th>Prioridad</th>
+      <th>Estado</th>
+      <th>Archivo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tarea in tareas %}
+    <tr>
+      <td>{{ tarea['titulo'] }}</td>
+      <td>{{ tarea['descripcion'] }}</td>
+      <td>{{ tarea['curso_destino'] }}</td>
+      <td>{{ tarea['fecha_vencimiento'] }}</td>
+      <td>{{ tarea['prioridad'] }}</td>
+      <td>{{ tarea['estado'] }}</td>
+      <td>
+        {% if tarea['ruta_archivo'] %}
+          <a href="{{ url_for('descargar_archivo', filename=tarea['ruta_archivo'].split('/')[-1]) }}" target="_blank">
+            Ver archivo
+          </a>
+        {% else %}
+          Sin archivo
+        {% endif %}
+      </td>
+      <td>
+        <button class="btn btn-sm btn-primary btn-editar" data-id="{{ tarea['id'] }}">Editar</button>
+        <form action="{{ url_for('eliminar_tarea', id=tarea['id']) }}" method="post" style="display:inline-block;">
+          <button class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar esta tarea?')">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8" class="text-center">No hay tareas</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal para crear/editar tarea -->
+<div id="modalTarea" class="modal">
+  <div class="modal-dialog">
+    <form id="formEditar"
+          method="POST"
+          enctype="multipart/form-data"
+          action="{{ url_for('crear_tarea_profesor') }}"
+          class="modal-content">
+      
+      <input type="hidden" name="id" id="tareaId" />
+
+      <!-- Encabezado del modal -->
+      <div class="modal-header">
+        <h5 id="modalTareaLabel">Crear / Editar Tarea</h5>
+        <button type="button" class="close-btn" id="btnCerrarModal">&times;</button>
+      </div>
+
+      <!-- Cuerpo del modal -->
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="titulo">Título</label>
+          <input type="text" id="titulo" name="titulo" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" name="descripcion" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="curso_destino">Curso destino</label>
+          <select id="curso_destino" name="curso_destino" class="form-select" required>
+            <option value="" disabled selected>Seleccione un curso</option>
+            {% for c in cursos %}
+              <option value="{{ c['curso'] }}"
+                {% if c['curso'] == selected_curso_destino %}selected{% endif %}>
+                {{ c['curso'] }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="col-6 mb-3">
+            <label for="fecha_vencimiento">Fecha de vencimiento</label>
+            <input type="date" id="fecha_vencimiento" name="fecha_vencimiento" class="form-control" />
+          </div>
+
+          <div class="col-6 mb-3">
+            <label for="prioridad">Prioridad</label>
+            <select id="prioridad" name="prioridad" class="form-select">
+              <option value="baja">Baja</option>
+              <option value="media" selected>Media</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="estado">Estado</label>
+          <select id="estado" name="estado" class="form-select">
+            <option value="pendiente" selected>Pendiente</option>
+            <option value="completada">Completada</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="archivo">Archivo (opcional)</label>
+          <input type="file" id="archivo" name="archivo" class="form-control" />
+          <small id="nombreArchivoActual" class="form-text text-muted"></small>
+        </div>
+      </div>
+
+      <!-- Pie del modal con los botones -->
+      <div class="modal-footer-combinado d-flex justify-content-end gap-2 p-3">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+  <!-- Script para abrir/cerrar modal y cargar cursos -->
+   <script>
+async function cargarCursos(cursoSeleccionado = '') {
+  try {
+    console.log('Llamando a /api/cursos...');
+    const resp = await fetch('/api/cursos');
+    if (!resp.ok) {
+      console.error('Error en /api/cursos:', resp.status, resp.statusText);
+      return;
+    }
+    const cursos = await resp.json();
+    console.log('Respuesta de /api/cursos:', cursos);
+    const selectCurso = document.getElementById('curso_destino');
+    selectCurso.innerHTML = '<option value="" disabled>Seleccione un curso</option>';
+    cursos.forEach(item => {
+      // Ahora usamos item.nombre, que coincide con lo que imprime tu API
+      const option = document.createElement('option');
+      option.value = item.curso;
+      option.textContent = item.curso;
+      if (item.nombre === cursoSeleccionado) {
+        option.selected = true;
+      }
+      selectCurso.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error cargando cursos:', error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btnCrearTarea = document.getElementById('btnCrearTarea');
+  const formEditar = document.getElementById('formEditar');
+  const modalTarea = document.getElementById('modalTarea');
+  const btnCerrarModal = document.getElementById('btnCerrarModal');
+  const btnCancelar = document.getElementById('btnCancelar');
+
+  function abrirModal() {
+    modalTarea.classList.add('show');
+  }
+  function cerrarModal() {
+    modalTarea.classList.remove('show');
+  }
+
+  btnCrearTarea.addEventListener('click', () => {
+    formEditar.reset();
+    document.getElementById('tareaId').value = '';
+    document.getElementById('nombreArchivoActual').textContent = '';
+    cargarCursos();  // ⇐ aquí se llena el <select>
+    abrirModal();
+  });
+
+  btnCerrarModal.addEventListener('click', cerrarModal);
+  btnCancelar.addEventListener('click', cerrarModal);
+
+  document.querySelectorAll('.btn-editar').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      const resp = await fetch(`/api/tarea/${id}`);
+      const data = await resp.json();
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+      formEditar.reset();
+      document.getElementById('tareaId').value = data.id;
+      document.getElementById('titulo').value = data.titulo;
+      document.getElementById('descripcion').value = data.descripcion;
+      document.getElementById('fecha_vencimiento').value = data.fecha_vencimiento || '';
+      document.getElementById('prioridad').value = data.prioridad;
+      document.getElementById('estado').value = data.estado;
+      // Aquí pasamos data.curso_destino y se comparará con item.nombre
+      cargarCursos(data.curso_destino);
+      if (data.ruta_archivo) {
+        const nombreArchivo = data.ruta_archivo.split('/').pop();
+        document.getElementById('nombreArchivoActual').textContent = `Archivo actual: ${nombreArchivo}`;
+      } else {
+        document.getElementById('nombreArchivoActual').textContent = '';
+      }
+      abrirModal();
+    });
+  });
+});
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
