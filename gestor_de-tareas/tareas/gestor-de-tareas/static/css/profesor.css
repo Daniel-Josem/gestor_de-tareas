@@ -1,0 +1,142 @@
+/* Estilos generales */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  margin: 0;
+}
+
+/* Sidebar */
+#sidebar {
+  background-color: #198754; /* verde Bootstrap */
+  min-height: 100vh;
+  padding: 1rem;
+  color: black;
+}
+
+#sidebar .sidebar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+#sidebar .nav-link {
+  color: black;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+#sidebar .nav-link:hover,
+#sidebar .nav-link.active {
+  background-color: gray(255, 255, 255, 0.15);
+  border-radius: 0.25rem;
+}
+
+/* Contenedor principal */
+.main-container {
+  padding: 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  margin: 2rem 1rem;
+}
+
+/* Filtros */
+.filtros-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.filtros-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filtros-form label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+/* Tabla de tareas */
+.tabla-tareas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabla-tareas thead {
+  background-color: #dee2e6;
+}
+
+.tabla-tareas th, .tabla-tareas td {
+  border: 1px solid #dee2e6;
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tabla-tareas tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.tabla-tareas .btn {
+  margin: 0 0.25rem;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal-dialog {
+  background-color: white;
+  margin: 5% auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-header h5 {
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+}
+
+.modal-body .form-control,
+.modal-body .form-select {
+  margin-bottom: 1rem;
+}
+
+.modal-footer-combinado .btn {
+  min-width: 100px;
+}
