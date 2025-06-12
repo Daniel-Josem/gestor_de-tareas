@@ -140,3 +140,18 @@ body {
 .modal-footer-combinado .btn {
   min-width: 100px;
 }
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal.show {
+  display: block;
+}

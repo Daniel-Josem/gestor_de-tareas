@@ -270,6 +270,32 @@ def editar_tarea(id):
 
     flash('Tarea actualizada')
     return redirect(url_for('profesor'))
+@app.route('/api/tarea/<int:id>', methods=['GET'])
+@login_required
+def obtener_tarea(id):
+    if current_user.rol != 'rol_profesor':
+        return jsonify({'error': 'No autorizado'}), 403
+
+    conn = get_db_connection()
+    tarea = conn.execute(
+        'SELECT * FROM tareas WHERE id = ? AND id_usuario_asignado = ?',
+        (id, current_user.id)
+    ).fetchone()
+    conn.close()
+
+    if tarea is None:
+        return jsonify({'error': 'Tarea no encontrada'}), 404
+
+    return jsonify({
+        'id': tarea['id'],
+        'titulo': tarea['titulo'],
+        'descripcion': tarea['descripcion'],
+        'fecha_vencimiento': tarea['fecha_vencimiento'],
+        'prioridad': tarea['prioridad'],
+        'estado': tarea['estado'],
+        'curso_destino': tarea['curso_destino'],
+        'ruta_archivo': tarea['ruta_archivo']
+    })
 
 @app.route('/eliminar_tarea/<int:id>', methods=['POST'])
 @login_required
