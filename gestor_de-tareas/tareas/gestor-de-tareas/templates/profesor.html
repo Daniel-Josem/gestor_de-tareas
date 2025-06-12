@@ -13,8 +13,22 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}" />
 
 </head>
-<body>
-  <div class="container-fluid">
+<div class="d-flex justify-content-end align-items-center mb-3">
+  <div class="dropdown">
+    <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="perfilDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-person-circle fs-4 me-2"></i>
+      <strong>{{ current_user.nombre }}</strong>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="perfilDropdown">
+      <li><a class="dropdown-item" href="#">Editar perfil</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="{{ url_for('logout') }}">Cerrar sesión</a></li>
+    </ul>
+  </div>
+</div>
+
+
+
     <div class="row gx-0">
       <!-- Barra lateral verde -->
 <!-- Barra lateral estilo admin -->
