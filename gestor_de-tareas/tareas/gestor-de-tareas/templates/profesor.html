@@ -33,9 +33,9 @@
       <!-- Barra lateral verde -->
 <!-- Barra lateral estilo admin -->
 <nav id="sidebar" class="col-md-2 d-none d-md-block bg-light border-end vh-100">
-  <div class="sidebar-header p-3"><h4>Tareas</h4></div>
+  <div class="sidebar-header p-3"><h4>Menu</h4></div>
   <ul class="list-unstyled components px-2">
-    <li><a href="#" id="dashboard-link" class="nav-link active">📊 Dashboard</a></li>
+    <li><a href="#" id="dashboard-link" class="nav-link active">📊 Tareas</a></li>
     <li>
       <a href="#cursosSubmenu" data-bs-toggle="collapse" class="dropdown-toggle nav-link">👩🏻‍🎓 Cursos</a>
       <ul class="collapse list-unstyled ps-3" id="cursosSubmenu">
@@ -44,24 +44,14 @@
         {% endfor %}
       </ul>
     </li>
-    <li>
-      <a href="#materiasSubmenu" data-bs-toggle="collapse" class="dropdown-toggle nav-link">📓 Materias</a>
-      <ul class="collapse list-unstyled ps-3" id="materiasSubmenu">
-        {% for m in ['Matemática','Sociales','Inglés','Biología','Español','Educación física','Etica & Valores','Química','Física'] %}
-          <li><a href="#" class="nav-link materia-link" data-materia="{{ m }}">{{ m }}</a></li>
-        {% endfor %}
-      </ul>
-    </li>
-    <li><a href="#" id="profesores-link" class="nav-link">👨‍🏫 Profesores</a></li>
-    <li><a href="#" class="nav-link registro-profesor-link">✍️ Registro de Profesor</a></li>
-  </ul>
+
 </nav>
 
 
       <!-- Contenido principal -->
       <div class="col-md-10 col-12">
         <div class="main-container">
-          <h1>Panel Profesor</h1>
+          <h1>Tareas </h1>
 
           <!-- Filtros -->
           <form method="get" class="filtros-form">

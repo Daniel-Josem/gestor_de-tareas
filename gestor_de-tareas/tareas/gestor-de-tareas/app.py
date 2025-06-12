@@ -3,6 +3,7 @@ import sqlite3, os
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
+from flask import session
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
@@ -129,10 +130,15 @@ def login():
         conn.close()
         if fila and check_password_hash(fila['contrasena'], contrasena) and fila['activo']:
             login_user(Usuario(**dict(fila)))
-            # Redirige según rol
-            return redirect(url_for(fila['rol'].replace('rol_', '')))
+
+            if fila['rol'] == 'rol_usuario':
+                return redirect(url_for('persona_panel'))
+            else:
+                return redirect(url_for(fila['rol'].replace('rol_', '')))
+
         flash('Usuario o contraseña incorrectos')
     return render_template('login.html')
+
 
 @app.route('/crear_usuario', methods=['GET', 'POST'])
 def crear_usuario():
@@ -153,6 +159,10 @@ def crear_usuario():
         finally:
             conn.close()
     return render_template('crear_usuario.html')
+
+@app.route('/usuario')
+def persona_panel():
+    return render_template('persona.html')
 
 # --- Rutas para profesor ---
 
@@ -208,6 +218,22 @@ def profesor():
         estado=estado,
         curso_filtro=curso_filtro
     )
+
+@app.route('/usuario')
+@login_required
+def usuario():
+    if current_user.rol != 'rol_usuario':
+        return redirect(url_for('login'))
+
+    print(f"Curso del usuario: {current_user.curso}")  # ← Agrega esto
+
+    conn = get_db_connection()
+    tareas = conn.execute('SELECT * FROM tareas WHERE curso_destino = ?', (current_user.curso,)).fetchall()
+    conn.close()
+
+    print(f"Tareas encontradas: {len(tareas)}")  # ← Agrega esto
+
+    return render_template('persona.html', tareas=tareas)
 
 
 

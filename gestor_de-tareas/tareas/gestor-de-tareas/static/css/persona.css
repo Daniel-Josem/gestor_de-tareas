@@ -1,0 +1,160 @@
+/* persona.css */
+
+/* Reset básico para el contenedor general */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo para centrar la tabla en la página */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
+  padding-top: 40px;
+}
+
+/* Título */
+.container h2 {
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #198754;
+}
+
+/* Tabla de tareas */
+table {
+  width: 90%;
+  max-width: 900px;
+  border-collapse: collapse;
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+  background-color: #198754;
+  color: white;
+}
+
+th, td {
+  padding: 12px 15px;
+  border: 1px solid #dee2e6;
+  text-align: center;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #e2f0e7;
+}
+
+.empty {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+}
+
+/* Estilo para enlaces en la tabla */
+a {
+  color: #198754;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Iconos superiores (campana + avatar) */
+.nav-icons {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 999;
+}
+
+.nav-icons .btn-light {
+  padding: 5px 8px;
+  font-size: 14px;
+}
+
+.nav-icons img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Responsive para tabla */
+@media (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  td {
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+  }
+
+  td::before {
+    position: absolute;
+    top: 12px;
+    left: 15px;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #198754;
+  }
+
+  td:nth-of-type(1)::before { content: "Título"; }
+  td:nth-of-type(2)::before { content: "Descripción"; }
+  td:nth-of-type(3)::before { content: "Fecha vencimiento"; }
+  td:nth-of-type(4)::before { content: "Prioridad"; }
+  td:nth-of-type(5)::before { content: "Estado"; }
+  td:nth-of-type(6)::before { content: "Archivo"; }
+  td:nth-of-type(7)::before { content: "Acción"; }
+}
+
+/* Sección principal centrada */
+.main-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+/* Selector de proyecto */
+.header-tools {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+/* Estilo para el título */
+.section-title {
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #198754;
+  font-size: 24px;
+}
+
+/* Centrado de tabla */
+table {
+  margin: 0 auto;
+}
+
+/* Asegura que la tabla no quede pegada al borde */
+table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+}
